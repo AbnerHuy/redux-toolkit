@@ -1,6 +1,13 @@
-import { createSlice, createSelector } from "@reduxjs/toolkit";
+import {
+    createSlice,
+    createSelector,
+    createEntityAdapter,
+  } from '@reduxjs/toolkit'
 
 import { StatusFilters } from "../filters/filterSlice"
+
+
+const todosAdapter = createEntityAdapter()
 
 
 const initialState={
@@ -76,10 +83,15 @@ export const {
 
   export default todosSlice.reducer;
 
+  export const {
+    selectAll: selectTodos,
+    selectById: selectTodoById,
+  } = todosAdapter.getSelectors((state) => state.todos)
+
     const selectTodoEntities = (state) => state.todos.entities;
     // console.log(selectTodoEntities);
 
-    export const selectTodos=createSelector(selectTodoEntities,
+    export const selectTodoIds=createSelector(selectTodoEntities,
         (entities)=> Object.values(entities))
 
     export const selectFilteredTodos=createSelector(
@@ -105,6 +117,8 @@ export const {
             });
   }
     )
+    
+   
                                 
 
   export const selectFilteredTodosIds=createSelector(selectFilteredTodos,(filter)=>filter.map((todo)=>todo.id))
