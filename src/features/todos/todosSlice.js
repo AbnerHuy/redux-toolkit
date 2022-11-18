@@ -1,3 +1,4 @@
+import React from 'react'
 import {
     createSlice,
     createSelector,
@@ -19,26 +20,29 @@ const todosSlice=createSlice({
     name:'todos',
     initialState,
     reducers:{
-        todoAdded(state,action){
-            const todo =action.payload;
-            state.entities[todo.id]=todo
+        todoAdded(state, action) {
+          console.log(action,"ok here1")
+          const todo = action.payload
+          state.entities[todo.id] = todo
         },
-        todoToggle(state,action){
-            const todoId=action.payload;
-            const todo =state.entities[todoId];
-            todo.completed = !todo.completed
+        todoToggled(state, action) {
+          const todoId = action.payload;
+          const todo = state.entities[todoId];
+          todo.completed = !todo.completed;
         },
-        todoColorSelected:{
-            reducer(state,action){
-                const {color,todoId}=action.payload;
-                state.entities[todoId].color=color
-            }
-
-            },
-            prepare(todoId,color){
+        todoColorSelected: {
+          reducer(state, action) {
+            
+            const { color, todoId } = action.payload;
+            state.entities[todoId].color = color;
+          },
+          prepare(todoId, color) {
+            console.log(color, "color");
+            console.log(todoId, "todoId");
             return {
-                payload:{todoId,color}
-            }
+              payload: { todoId, color }
+            };
+          }
         },
         todoDeleted(state,action){
             delete state.entities[action.payload]
@@ -78,47 +82,51 @@ export const {
     todoDeleted,
     todoToggled,
     todosLoaded,
-    todosLoading
-  } = todosSlice.actions;
+    todosLoading,
+  } = todosSlice.actions
+  
+  export default todosSlice.reducer
 
-  export default todosSlice.reducer;
+ const selectTodoEntities = (state) => state.todos.entities
 
-  export const {
-    selectAll: selectTodos,
-    selectById: selectTodoById,
-  } = todosAdapter.getSelectors((state) => state.todos)
 
-    const selectTodoEntities = (state) => state.todos.entities;
-    // console.log(selectTodoEntities);
+export const selectTodos = createSelector(selectTodoEntities, (entities) =>
+  Object.values(entities)
+)
 
-    export const selectTodoIds=createSelector(selectTodoEntities,
-        (entities)=> Object.values(entities))
+export const selectTodoById = (state, todoId) => {
+  return selectTodoEntities(state)[todoId]
+}
 
-    export const selectFilteredTodos=createSelector(
-        // First input selector: all todos
-        selectTodos,
-        // Second input selector: all filter values
-        (state) => state.filters,
-        // Output selector: receives both values
-        (todos, filters) => {
-            const { status, colors } = filters;
-            const showAllCompletions = status === StatusFilters.All;
-            if (showAllCompletions && colors.length === 0) {
-            return todos;
-            }
+export const selectTodoIds = createSelector(
+  selectTodos,
+  (todos) => todos.map((todo) => todo.id)
+)
 
-            const completedStatus = status === StatusFilters.Completed;
-            // Return either active or completed todos based on filter
-            return todos.filter((todo) => {
-            const statusMatches =
-                showAllCompletions || todo.completed === completedStatus;
-            const colorMatches = colors.length === 0 || colors.includes(todo.color);
-            return statusMatches && colorMatches;
-            });
+export const selectFilteredTodos = createSelector(
+  selectTodos,//all todos
+  (state) => state.filters,//all filter values
+
+  (todos, filters) => {
+    const { status, colors } = filters
+    const showAllCompletions = status === StatusFilters.All
+
+    //Check status with color = []
+    if (showAllCompletions && colors.length === 0) {
+      return todos
+    }
+
+    const completedStatus = status === StatusFilters.Completed
+    return todos.filter((todo) => {
+      const statusMatches =
+        showAllCompletions || todo.completed === completedStatus
+      const colorMatches = colors.length === 0 || colors.includes(todo.color)
+      return statusMatches && colorMatches
+    })
   }
-    )
-    
-   
-                                
+)
 
-  export const selectFilteredTodosIds=createSelector(selectFilteredTodos,(filter)=>filter.map((todo)=>todo.id))
+export const selectFilteredTodoIds = createSelector(
+  selectFilteredTodos,
+  (filteredTodos) => filteredTodos.map((todo) => todo.id)
+)

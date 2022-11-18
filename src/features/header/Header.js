@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { todoAdded } from '../todos/todosSlice';
+import {v4 as uuidv4} from 'uuid'
+
 
 const Header = () => {
 
@@ -17,7 +19,12 @@ const Header = () => {
         
         if(e.which === 13 && trimmedText){
             setStatus('loading')
-            dispatch(todoAdded(trimmedText))
+            dispatch(todoAdded({
+              id:uuidv4(),
+              color:'',
+              completed:false,
+              text:trimmedText,
+            }))
 
             //clear out the text input
             setText('')

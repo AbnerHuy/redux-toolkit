@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import TodoListItem from './TodoListItem'
-import { selectFilteredTodos } from './todosSlice';
+import {  selectFilteredTodoIds } from './todosSlice';
 
 
 const TodoList = () => {
-    const todoIds=useSelector(selectFilteredTodos)
+    const todoIds=useSelector(selectFilteredTodoIds)
     console.log(todoIds ,"oke here")
     const loadingStatus =useSelector((state)=>state.todos.status)
 

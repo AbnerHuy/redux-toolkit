@@ -11,40 +11,42 @@ const initialState = {
   colors: [],
 }
 
-const filtersSlice=createSlice({
-  name:'filters',
+const filtersSlice = createSlice({
+  name: 'filters',
   initialState,
-  reducers:{
-    StatusFiltersChange(state,action){
-      state.status =action.payload
+  reducers: {
+    statusFilterChanged(state, action) {
+      state.status = action.payload
     },
-    colorFilterChange:{
-      reducer(state,action){
-        let { color,changeType}=action.payload
-        const {colors}=state
-          switch(changeType){
-            case 'added':{
-              if(!colors.includes(color)){
-                colors.push(color)
-              }
-              break
+    colorFilterChanged: {
+      reducer(state, action) {
+        let { color, changeType } = action.payload
+        const { colors } = state
+        switch (changeType) {
+          case 'added': {
+            if (!colors.includes(color)) {
+              colors.push(color)
             }
-            case 'removed':{
-              state.colors=colors.filter((existingColor)=>existingColor !==color)
-            }
-            default:
-              return
+            break
           }
-      },
-      prepare(color,changeType){
-        return {
-          payload:{color,changeType}
+          case 'removed': {
+            state.colors = colors.filter(
+              (existingColor) => existingColor !== color
+            )
+          }
+          default:
+            return
         }
-      }
-    }
-  }
+      },
+      prepare(color, changeType) {
+        return {
+          payload: { color, changeType },
+        }
+      },
+    },
+  },
 })
 
-export const { colorFilterChange,StatusFiltersChange}=filtersSlice.actions
+export const { colorFilterChanged, statusFilterChanged } = filtersSlice.actions
 
 export default filtersSlice.reducer

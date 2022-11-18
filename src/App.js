@@ -1,6 +1,7 @@
 
 import Header from './features/header/Header';
 import TodoList from './features/todos/TodoList';
+import Footer from './footer.js/Footer';
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
         <div className="todoapp">
           <Header />
           <TodoList />
-          {/* <Footer /> */}
+          <Footer />
         </div>
       </section>
     </main>
